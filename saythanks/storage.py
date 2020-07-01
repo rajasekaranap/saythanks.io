@@ -82,7 +82,9 @@ class Note(object):
 class Inbox(object):
     """A registered inbox for a given user (provided by Auth0)."""
     def __init__(self, slug):
-        self.slug = slug
+        print("_init_slug:",str(slug).split('@')[0])
+        self.slug = str(slug).split('@')[0]
+        #self.slug = slug
 
     @property
     def auth_id(self):
@@ -128,8 +130,12 @@ class Inbox(object):
 
     @classmethod
     def is_enabled(cls, slug):
+        print("slug-------",slug)
         q = 'SELECT enabled FROM inboxes where slug = :slug'
+        print('slug qqqqqq:',q)
         r = db.query(q, slug=slug).all()
+        print(r)
+        #return True
         return bool(r[0]['enabled'])
 
     @classmethod

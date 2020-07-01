@@ -8,7 +8,7 @@ from sendgrid.helpers.mail import Email, Content, Mail
 
 API_KEY = os.environ['SENDGRID_API_KEY']
 sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
-
+#sg = sendgrid.SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
 TEMPLATE = """{}
 
 --{}

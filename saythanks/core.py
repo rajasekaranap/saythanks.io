@@ -241,6 +241,7 @@ def callback_handling():
     json_header = {'content-type': 'application/json', 'Authorization': 'Bearer {0}'.format(auth_jwt_v2)}
 
     token_url = 'https://{0}/oauth/token'.format(auth_domain)
+    print("token_url",token_url)
     token_payload = {
         'client_id': auth_id,
         'client_secret': auth_secret,
@@ -249,14 +250,18 @@ def callback_handling():
         'grant_type': 'authorization_code'
     }    
 
+    print("token_payload",token_payload)
+
     # Fetch User info from Auth0.
     token_info = requests.post(token_url, data=json.dumps(token_payload), headers=json_header).json()
+    print(token_info)
     user_url = 'https://{0}/userinfo?access_token={1}'.format(auth_domain, token_info['access_token'])
     user_info = requests.get(user_url).json()
-
+    print(user_info)
     user_info_url = 'https://{0}/api/v2/users/{1}'.format(auth_domain, user_info['sub'])
     
     user_detail_info = requests.get(user_info_url,headers=json_header).json()
+    print(user_detail_info)
 
     # Add the 'user_info' to Flask session.
     session['profile'] = user_info
@@ -264,8 +269,11 @@ def callback_handling():
     nickname = user_detail_info['nickname']
     userid = user_info['sub']    
     session['profile']['nickname'] = nickname
+
+    print("DB PROces----------------------------------------")
     if not storage.Inbox.does_exist(nickname):        
         # Using nickname by default, can be changed manually later if needed.
         storage.Inbox.store(nickname, userid)
+        print("DDDDDVBBB Created")
 
     return redirect(url_for('inbox'))
